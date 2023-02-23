@@ -1,25 +1,32 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity 0.8.0;
+pragma solidity 0.8.18;
 
 import "./Ownable.sol";
 
-contract Constants {
-    uint256 public tradeFlag = 1;
-    uint256 public basicFlag = 0;
-    uint256 public dividendFlag = 1;
-}
+// contract Constants {
+//     uint256 public constant tradeFlag = 1;
+//     uint256 public constant basicFlag = 0;
+//     uint256 public constant dividendFlag = 1;
+// }
 
-contract GasContract is Ownable, Constants {
+contract GasContract is Ownable {
+    uint8 constant tradeFlag = 1;
+    uint8 constant basicFlag = 0;
+    uint8 constant dividendFlag = 1;
+    uint8 wasLastOdd = 1;
+
     uint256 public totalSupply = 0; // cannot be updated
-    uint256 public paymentCounter = 0;
-    mapping(address => uint256) public balances;
-    uint256 public tradePercent = 12;
-    address public contractOwner;
-    uint256 public tradeMode = 0;
-    mapping(address => Payment[]) public payments;
+    uint256 paymentCounter = 0;
+    uint256 tradePercent = 12;
+    address contractOwner;
+    uint256 tradeMode = 0;
+
+    bool isReady = false;
+    mapping(address => uint256) balances;
+    mapping(address => Payment[]) payments;
     mapping(address => uint256) public whitelist;
     address[5] public administrators;
-    bool public isReady = false;
+
     enum PaymentType {
         Unknown,
         BasicPayment,
@@ -46,15 +53,15 @@ contract GasContract is Ownable, Constants {
         address updatedBy;
         uint256 blockNumber;
     }
-    uint256 wasLastOdd = 1;
-    mapping(address => uint256) public isOddWhitelistUser;
+    
+    mapping(address => uint256) isOddWhitelistUser;
     struct ImportantStruct {
         uint256 valueA; // max 3 digits
         uint256 bigValue;
         uint256 valueB; // max 3 digits
     }
 
-    mapping(address => ImportantStruct) public whiteListStruct;
+    mapping(address => ImportantStruct) whiteListStruct;
 
     event AddedToWhitelist(address userAddress, uint256 tier);
 
@@ -124,13 +131,13 @@ contract GasContract is Ownable, Constants {
         }
     }
 
-    function getPaymentHistory()
-        public
-        payable
-        returns (History[] memory paymentHistory_)
-    {
-        return paymentHistory;
-    }
+    // function getPaymentHistory()
+    //     public
+    //     payable
+    //     returns (History[] memory paymentHistory_)
+    // {
+    //     return paymentHistory;
+    // }
 
     function checkForAdmin(address _user) public view returns (bool admin_) {
         bool admin = false;
@@ -147,7 +154,7 @@ contract GasContract is Ownable, Constants {
         return balance;
     }
 
-    function getTradingMode() public view returns (bool mode_) {
+    function getTradingMode() public pure returns (bool mode_) {
         bool mode = false;
         if (tradeFlag == 1 || dividendFlag == 1) {
             mode = true;
@@ -265,16 +272,18 @@ contract GasContract is Ownable, Constants {
             _tier < 255,
             "Gas Contract - addToWhitelist function -  tier level should not be greater than 255"
         );
-        whitelist[_userAddrs] = _tier;
+        // whitelist[_userAddrs] = _tier;
         if (_tier > 3) {
-            whitelist[_userAddrs] -= _tier;
+            // whitelist[_userAddrs] -= _tier;
             whitelist[_userAddrs] = 3;
         } else if (_tier == 1) {
-            whitelist[_userAddrs] -= _tier;
+            // whitelist[_userAddrs] -= _tier;
             whitelist[_userAddrs] = 1;
         } else if (_tier > 0 && _tier < 3) {
-            whitelist[_userAddrs] -= _tier;
+            // whitelist[_userAddrs] -= _tier;
             whitelist[_userAddrs] = 2;
+        } else {
+            whitelist[_userAddrs] = _tier;
         }
         uint256 wasLastAddedOdd = wasLastOdd;
         if (wasLastAddedOdd == 1) {

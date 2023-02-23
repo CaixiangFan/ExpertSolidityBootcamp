@@ -29,7 +29,7 @@ contract ContractTest is Test {
     }
 
     function testInitialBalance() public {
-        
+        assertEq(defi.initialAmount(), initialAmount);
     }
 
     function testAddInvestor() public {
