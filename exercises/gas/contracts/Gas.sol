@@ -15,20 +15,19 @@ contract GasContract {
     // uint8 constant dividendFlag = 1;
     // uint256 constant tradePercent = 12;
     uint256 wasLastOdd = 1;
-
     uint256 public totalSupply = 0; // cannot be updated
     uint256 paymentCounter = 0;
-    
-    address contractOwner;
-    uint256 tradeMode = 0;
+    // uint256 tradeMode = 0;
 
     bool isReady = false;
+    address contractOwner;
     mapping(address => uint256) balances;
     mapping(address => Payment[]) payments;
     mapping(address => uint256) public whitelist;
     mapping(address => uint256) isOddWhitelistUser;
     mapping(address => ImportantStruct) whiteListStruct;
     address[5] public administrators;
+    History[] paymentHistory; // when a payment was updated
 
     enum PaymentType {
         Unknown,
@@ -38,9 +37,6 @@ contract GasContract {
         GroupPayment
     }
     // PaymentType constant defaultPayment = PaymentType.Unknown;
-
-    History[] paymentHistory; // when a payment was updated
-
     struct Payment {
         PaymentType paymentType;
         uint256 paymentID;
