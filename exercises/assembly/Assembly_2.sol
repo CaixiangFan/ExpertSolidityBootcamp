@@ -1,4 +1,5 @@
-pragma solidity ^0.8.4;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.19;
 
 contract Add {
     function addAssembly(uint256 x, uint256 y) public pure returns (uint256) {
@@ -9,10 +10,15 @@ contract Add {
         // and return the result from the second block
         assembly {
             let result := add(x, y)
+            let ptr := mload(0x40)
+            let free_mem := add(ptr, 0x20)
+            mstore(result, free_mem)
         }
 
         assembly {
-            return()
+            let ptr := mload(0x40)
+            let free_mem := add(ptr, 0x20)
+            return(free_mem, 0x20)
         }
     }
 }
