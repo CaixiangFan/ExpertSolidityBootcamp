@@ -1,4 +1,5 @@
-pragma solidity ^0.8.4;
+// SPDX-License-Identifier: UNLICENSED
+pragma solidity 0.8.19;
 
 contract Intro {
     function intro() public pure returns (uint16) {
@@ -12,6 +13,10 @@ contract Intro {
             // To return it needs to be stored in memory
             // with command mstore(MEMORY_LOCATION, STACK_VARIABLE)
             // to return you need to specify address and the size from the starting point
+            let val_mol := mol
+            let free_mem := mload(0x40)
+            mstore(free_mem, val_mol)
+            return(free_mem, 0x16)
         }
     }
 }
